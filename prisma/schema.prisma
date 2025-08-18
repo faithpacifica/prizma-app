@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client-js" // This generates the Prisma Client JS
   // output   = "../app/generated/prisma"
 }
 
@@ -10,4 +10,25 @@ datasource db {
   provider = "postgresql"
   url = env("DATABASE_URL")
   directUrl= env("DIRECT_URL")
+}
+//These lines tell prisma how to connect to our database.
+//The DATABASE_URL is what Prisma will use to connect to the database for queries like inserts, updates, and deletes. The DIRECT_URL is what Prisma will use to connect to the database when it needs to update the schema like adding or removing tables or rules.
+
+model User{
+id Int @id @default(autoincrement())
+name String
+email String @unique
+createdAt DateTime @default(now())
+updatedAt DateTime @updatedAt
+posts Post[] //one User can have an array (many) Posts
+}
+
+model Post{
+id Int @id @default(autoincrement())
+title String
+content String
+author User @relation(fields: [authorId], references:[id]) //define the relationship from the Post side
+authorId Int
+createdAt DateTime @default(now())
+updatedAt DateTime @updatedAt
 }
